@@ -4,19 +4,20 @@ import userService from "../services/users"
 const LoginForm = ({ setUser }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  
-  const handleSubmit = async event => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
     try {
-      const user = await userService.login({username, password})
+      const user = await userService.login({ username, password })
+      window.localStorage.setItem("loggedInUser", JSON.stringify(user))
       setUser(user)
     } catch {
-      return 'error'
+      return "error"
     } finally {
-      setUsername('')
-      setPassword('')
+      setUsername("")
+      setPassword("")
     }
-  } 
+  }
 
   return (
     <form onSubmit={handleSubmit}>
