@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import blogService from "../services/blogs"
+import Notification from "./Notification"
 
 const BlogForm = ({ user, addBlog }) => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
+  const [notification, setNotification] = useState([null, null])
+  const [currentTimeout,setCurrentTimeout] = useState(null)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -12,17 +15,25 @@ const BlogForm = ({ user, addBlog }) => {
     try {
       const response = await blogService.create(user, blog)
       addBlog(response.data)
+      setNotification([`Added ${title}`, "info"])
       setTitle("")
       setAuthor("")
       setUrl("")
     } catch (err) {
-      console.log('invalid blog ', err)
+      setNotification([err.response.data.error, "error"])
     }
   }
+  useEffect(()=> {
+    clearTimeout(currentTimeout)
+    console.log('clearing')
+    setCurrentTimeout(setTimeout(() => setNotification([null,null]),4000))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[notification])
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>New Blog</h2>
+      <Notification message={notification[0]} kind={notification[1]} />
       <div>
         <label htmlFor="title">Title</label>
         <input
