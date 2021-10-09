@@ -1,24 +1,10 @@
-import { useState,useRef } from "react"
+import { useState } from "react"
 import blogService from "../services/blogs"
-import Notification from "./Notification"
 
-const BlogForm = ({ user, addBlog }) => {
+const BlogForm = ({ user, addBlog, pushNotification }) => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
-  const [notificationQueue, setNotificationQueue] = useState([])
-
-  const notificationRef = useRef(notificationQueue)
-  notificationRef.current = notificationQueue
-
-  const dequeNotification = () => {
-    console.log("deque", notificationQueue)
-    setNotificationQueue(notificationRef.current.slice(1))
-  }
-  const pushNotification = (notification) => {
-    setNotificationQueue([...notificationQueue, notification])
-    setTimeout(dequeNotification,2000)
-  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -38,9 +24,6 @@ const BlogForm = ({ user, addBlog }) => {
   return (
     <form onSubmit={handleSubmit}>
       <h2>New Blog</h2>
-      {notificationQueue.map((notification, index) => (
-        <Notification key={index} message={notification.message} kind={notification.kind} />
-      ))}
       <div>
         <label htmlFor="title">Title</label>
         <input
