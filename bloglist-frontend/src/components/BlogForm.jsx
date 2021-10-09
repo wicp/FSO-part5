@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState,useRef } from "react"
 import blogService from "../services/blogs"
 import Notification from "./Notification"
 
@@ -8,13 +8,15 @@ const BlogForm = ({ user, addBlog }) => {
   const [url, setUrl] = useState("")
   const [notificationQueue, setNotificationQueue] = useState([])
 
+  const notificationRef = useRef(notificationQueue)
+  notificationRef.current = notificationQueue
+
   const dequeNotification = () => {
-    console.log('deque',notificationQueue)
-    setNotificationQueue(notificationQueue.slice(1))
+    console.log("deque", notificationQueue)
+    setNotificationQueue(notificationRef.current.slice(1))
   }
   const pushNotification = (notification) => {
     setNotificationQueue([...notificationQueue, notification])
-    setTimeout(dequeNotification,5000)
   }
 
   const handleSubmit = async (event) => {
@@ -23,7 +25,7 @@ const BlogForm = ({ user, addBlog }) => {
     try {
       const response = await blogService.create(user, blog)
       addBlog(response.data)
-      pushNotification({message:`Added ${title}`, kind:"info"})
+      pushNotification({ message: `Added ${title}`, kind: "info" })
       setTitle("")
       setAuthor("")
       setUrl("")
@@ -33,11 +35,14 @@ const BlogForm = ({ user, addBlog }) => {
   }
 
   return (
+    <>
+      <button onClick={()=>pushNotification({message:'queued '+(new Date()).toLocaleTimeString(),kind:'info'})}>Queue</button>
+      <button onClick={()=>setTimeout(dequeNotification,2000)}>Deque</button>
     <form onSubmit={handleSubmit}>
       <h2>New Blog</h2>
-    {notificationQueue.map(notification =>
-      <Notification message={notification.message} kind={notification.kind} />
-    )}
+      {notificationQueue.map((notification) => (
+        <Notification message={notification.message} kind={notification.kind} />
+      ))}
       <div>
         <label htmlFor="title">Title</label>
         <input
@@ -64,6 +69,7 @@ const BlogForm = ({ user, addBlog }) => {
       </div>
       <button type="submit">Create</button>
     </form>
+    </>
   )
 }
 
