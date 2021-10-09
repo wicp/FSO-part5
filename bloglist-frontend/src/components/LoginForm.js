@@ -7,21 +7,19 @@ const LoginForm = ({ setUser, pushNotification }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setUsername("")
+    setPassword("")
     try {
       const user = await userService.login({ username, password })
       window.localStorage.setItem("loggedInUser", JSON.stringify(user))
       setUser(user)
     } catch(error) {
       if (error.response.data.error) {
-        console.log('notification')
         pushNotification({ message: error.response.data.error, kind: "error" })
       } else {
         pushNotification({ message: "Could not reach server", kind: "error" })
       }  
-    } finally {
-      setUsername("")
-      setPassword("")
-    }
+    } 
   }
 
   return (
