@@ -16,8 +16,8 @@ const BlogForm = ({ user, addBlog, pushNotification }) => {
       setTitle("")
       setAuthor("")
       setUrl("")
-    } catch (err) {
-      pushNotification([err.response.data.error, "error"])
+    } catch (error) {
+      pushNotification({ message: error.response.data.error, kind: "error" })
     }
   }
 
