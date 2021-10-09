@@ -30,8 +30,10 @@ const App = () => {
   const addBlog = blog => setBlogs([...blogs,blog])
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    if (user) {
+      blogService.getAll().then((blogs) => setBlogs(blogs))
+    }
+  }, [user])
   
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("loggedInUser")
