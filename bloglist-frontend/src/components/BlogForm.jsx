@@ -17,6 +17,7 @@ const BlogForm = ({ user, addBlog }) => {
   }
   const pushNotification = (notification) => {
     setNotificationQueue([...notificationQueue, notification])
+    setTimeout(dequeNotification,2000)
   }
 
   const handleSubmit = async (event) => {
@@ -35,13 +36,10 @@ const BlogForm = ({ user, addBlog }) => {
   }
 
   return (
-    <>
-      <button onClick={()=>pushNotification({message:'queued '+(new Date()).toLocaleTimeString(),kind:'info'})}>Queue</button>
-      <button onClick={()=>setTimeout(dequeNotification,2000)}>Deque</button>
     <form onSubmit={handleSubmit}>
       <h2>New Blog</h2>
-      {notificationQueue.map((notification) => (
-        <Notification message={notification.message} kind={notification.kind} />
+      {notificationQueue.map((notification, index) => (
+        <Notification key={index} message={notification.message} kind={notification.kind} />
       ))}
       <div>
         <label htmlFor="title">Title</label>
@@ -69,7 +67,6 @@ const BlogForm = ({ user, addBlog }) => {
       </div>
       <button type="submit">Create</button>
     </form>
-    </>
   )
 }
 
