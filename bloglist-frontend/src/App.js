@@ -14,7 +14,6 @@ const App = () => {
   notificationRef.current = notificationQueue
 
   const dequeNotification = () => {
-    console.log("deque", notificationQueue)
     setNotificationQueue(notificationRef.current.slice(1))
   }
   const pushNotification = (notification) => {
@@ -42,14 +41,21 @@ const App = () => {
     }
   },[])
 
-  if (!user) return <LoginForm setUser={setUser} />
+  const notificationJSX = notificationQueue.map((notification, index) => (
+          <Notification key={index} message={notification.message} kind={notification.kind} />
+        ))
+  if (!user) return(
+    <div>
+      {notificationJSX}
+      <LoginForm setUser={setUser} pushNotification={pushNotification} />
+    </div>
+  )
+
   return (
     <div>
       <h2>blogs</h2>
       <p>
-        {notificationQueue.map((notification, index) => (
-          <Notification key={index} message={notification.message} kind={notification.kind} />
-        ))}
+        {notificationJSX}
         Welcome, {user.name} 
         <button onClick={logout}>Logout</button>
       </p>

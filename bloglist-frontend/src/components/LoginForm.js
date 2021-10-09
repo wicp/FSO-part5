@@ -1,7 +1,7 @@
 import { useState } from "react"
 import userService from "../services/users"
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, pushNotification }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
@@ -11,8 +11,13 @@ const LoginForm = ({ setUser }) => {
       const user = await userService.login({ username, password })
       window.localStorage.setItem("loggedInUser", JSON.stringify(user))
       setUser(user)
-    } catch {
-      return "error"
+    } catch(error) {
+      if (error.response.data.error) {
+        console.log('notification')
+        pushNotification({ message: error.response.data.error, kind: "error" })
+      } else {
+        pushNotification({ message: "Could not reach server", kind: "error" })
+      }  
     } finally {
       setUsername("")
       setPassword("")
