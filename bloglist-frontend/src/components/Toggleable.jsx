@@ -1,3 +1,4 @@
+import React from 'react'
 
 const Toggleable = ({label, children, visible, setVisible}) => {
   if (!visible) return (
