@@ -11,11 +11,11 @@ const BlogForm = ({ user, addBlog, pushNotification }) => {
     const blog = { title, author, url }
     try {
       const response = await blogService.create(user, blog)
-      addBlog(response.data)
       pushNotification({ message: `Added ${title}`, kind: "info" })
       setTitle("")
       setAuthor("")
       setUrl("")
+      addBlog(response.data)
     } catch (error) {
       pushNotification({ message: error.response.data.error, kind: "error" })
     }
