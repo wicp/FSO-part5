@@ -1,7 +1,18 @@
 import { useState } from "react"
+import blogService from "../services/blogs"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user }) => {
   const [showMore, setShowMore] = useState(false)
+  const [likes, setLikes] = useState(blog.likes)
+  const addLike = () => {
+    const updatedBlog = {...blog, likes: likes+1}
+    try {
+      blogService.update(user, updatedBlog)
+    }
+    finally {
+      setLikes(likes+1)
+    }
+  }
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -20,7 +31,7 @@ const Blog = ({ blog }) => {
       {showMore ? (
         <>
           <p>{blog.url}</p>
-          <p>likes {blog.likes} <button>like</button></p>
+          <p>likes {likes} <button onClick={addLike}>like</button></p>
           <p>{blog.user.name}</p>
         </>
       ) : (

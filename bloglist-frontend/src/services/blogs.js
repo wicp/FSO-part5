@@ -13,9 +13,18 @@ const create = (user, blog) => {
   return request
 }
 
+const update = (user, blog) => {
+  const blogWithoutUserJoin = {...blog, user:blog.user.id} 
+  const request = axios.put(baseUrl + `/${blog.id}`, blogWithoutUserJoin, {
+    headers: { Authorization: `bearer ${user.token}` },
+  })
+  return request
+}
+
 const blogService = {
   getAll,
   create,
+  update,
 }
 
 export default blogService
